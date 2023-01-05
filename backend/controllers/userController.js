@@ -1,9 +1,17 @@
-exports.getAllUsers = (req, res) => {
-	res.status(500).json({
-		status: 'error',
-		message: 'This route is not ready!!',
+const User = require('../models/userModel');
+const ctachAsync = require('../utils/catchAsync');
+
+exports.getAllUsers = ctachAsync(async (req, res, next) => {
+	const users = await User.find();
+
+	res.status(200).json({
+		status: 'success',
+		results: users.length,
+		data: {
+			users,
+		},
 	});
-};
+});
 
 exports.getUser = (req, res) => {
 	//   console.log(req.params.id);
@@ -32,16 +40,4 @@ exports.deleteUser = (req, res) => {
 		status: 'Error',
 		message: 'This route is not ready!',
 	});
-};
-
-exports.isValidID = (req, res, next, val) => {
-	console.log(`val is the ID parameter: ${val}`);
-	next();
-	// Check if ID is valid
-};
-
-exports.isValidBody = (req, res, next) => {
-	console.log(`Data to post: ${req.body}`);
-	// Check if body is valid (for post req)
-	next();
 };
