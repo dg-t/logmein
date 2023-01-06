@@ -16,6 +16,7 @@ exports.signup = catchAsync(async (req, res, next) => {
 		password: req.body.password,
 		passwordConfirm: req.body.passwordConfirm,
 		passwordChangedAt: req.body.passwordChangedAt,
+		role: req.body.role,
 	});
 
 	const token = jwtSign(newUser._id);
@@ -37,7 +38,7 @@ exports.login = catchAsync(async (req, res, next) => {
 
 	const user = await User.findOne({ email }).select('+password');
 	if (!user || !(await user.verifyPassword(password, user.password)))
-		return next(new AppError('Incorrect email or password.', 401));
+		return next(new AppError('Invalid credentials.', 401));
 
 	const token = jwtSign(user._id);
 
@@ -73,3 +74,11 @@ exports.protect = catchAsync(async (req, res, next) => {
 	req.user = currentUser;
 	next();
 });
+
+exports.restrict =
+	(...roles) =>
+	(req, res, next) => {
+		if (!roles.includes(req.user.role))
+			return next(new AppError('You do not have permissions.', 403));
+		next();
+	};
