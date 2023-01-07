@@ -46,6 +46,9 @@ app.use(xss()); // Cross-Site Scripting
  */
 app.use(hpp());
 
+// Serve static files
+app.use(express.static(`${__dirname}/public`));
+
 // ROUTES
 app.use('/api/v1/users', userRouter);
 
