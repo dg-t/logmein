@@ -1,7 +1,6 @@
 const User = require('../models/userModel');
 const AppError = require('../utils/appError');
 const catchAsync = require('../utils/catchAsync');
-const ctachAsync = require('../utils/catchAsync');
 
 const filterDataToUpdate = (dataToUpdate, ...allowFields) => {
 	const updatedFields = {};
@@ -11,7 +10,7 @@ const filterDataToUpdate = (dataToUpdate, ...allowFields) => {
 	return updatedFields;
 };
 
-exports.getAllUsers = ctachAsync(async (req, res, next) => {
+exports.getAllUsers = catchAsync(async (req, res, next) => {
 	const users = await User.find();
 
 	res.status(200).json({
@@ -23,7 +22,7 @@ exports.getAllUsers = ctachAsync(async (req, res, next) => {
 	});
 });
 
-exports.updateUser = ctachAsync(async (req, res, next) => {
+exports.updateUser = catchAsync(async (req, res, next) => {
 	if (req.body.password || req.body.passwordConfirm)
 		return next(
 			new AppError(
