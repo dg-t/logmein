@@ -8,6 +8,7 @@ const hpp = require('hpp');
 const userRouter = require('./routes/userRoutes');
 const AppError = require('./utils/appError');
 const globalErrorHandler = require('./controllers/errorController');
+const getHomePage = require('./controllers/homeController');
 
 const app = express();
 
@@ -50,6 +51,7 @@ app.use(hpp());
 app.use(express.static(`${__dirname}/public`));
 
 // ROUTES
+app.route('/api/v1/home').get(getHomePage);
 app.use('/api/v1/users', userRouter);
 
 app.all('*', (req, res, next) => {
