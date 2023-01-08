@@ -4,7 +4,7 @@ const crypto = require('crypto');
 const User = require('../models/userModel');
 const AppError = require('../utils/appError');
 const catchAsync = require('../utils/catchAsync');
-const Email = require('../utils/sendEmail');
+const sendEmail = require('../utils/sendEmail');
 
 const jwtSign = (id) =>
 	jwt.sign({ id }, process.env.JWT_SECRET, {
@@ -38,15 +38,29 @@ exports.signup = catchAsync(async (req, res, next) => {
 		email: req.body.email,
 		password: req.body.password,
 		passwordConfirm: req.body.passwordConfirm,
-		// passwordChangedAt: req.body.passwordChangedAt,
 		role: req.body.role,
+		preferredLanguage: req.body.preferredLanguage,
 	});
 
-	const url = `${req.protocol}://${req.get('host')}/api/v1/home`;
-	await new Email(newUser, url).sendEmail(
-		'<h1>My Template</h1><p>Paragraph</p>',
-		'Welcome subject'
+	// Simple i18n translate
+	// const htmlEmailMessage = res.__('welcomeEmailMessage');
+	// i18n translate message and update message content
+	// const htmlEmailMessage = res.__('welcomeEmailMessage', {
+	// 	name: newUser.name,
+	// });
+	// i18n translate message and update message content and send in different locale
+	const htmlEmailMessage = res.__(
+		{ phrase: 'welcomeEmailMessage', locale: newUser.preferredLanguage },
+		{ name: newUser.name }
 	);
+	const emailSubject = res.__({
+		phrase: 'welcomeEmailSubject',
+		locale: newUser.preferredLanguage,
+	});
+	await sendEmail(newUser, htmlEmailMessage, emailSubject);
+
+	// URL to redirect
+	// const url = `${req.protocol}://${req.get('host')}/api/v1/home`;
 
 	createSendToken(newUser, 201, res, true);
 });
@@ -112,16 +126,15 @@ exports.forgotPassword = catchAsync(async (req, res, next) => {
 		const resetURL = `${req.protocol}://${req.get(
 			'host'
 		)}/api/v1/users/resetPassword/${resetToken}`;
-		await new Email(user, resetURL).sendEmail(
-			`<h1>My Template Reset</h1>
-			<p>Forgot your password? Please go to the following URL to reset your password:</p>
-			<a href="${resetURL}">Anchor Tag</a>
-			<p>If the link is not working, please copy/paste the following URL in your browser:</p>
-			<p>${resetURL}</p>
-			<br />
-			<p>If you did not forgot your password, please ignore this email.</p>`,
-			'Reset subject'
+		const htmlEmailMessage = res.__(
+			{ phrase: 'forgotPasswordEmailMessage', locale: user.preferredLanguage },
+			{ name: user.name, resetURL }
 		);
+		const emailSubject = res.__({
+			phrase: 'forgotPasswordEmailSubject',
+			locale: user.preferredLanguage,
+		});
+		await sendEmail(user, htmlEmailMessage, emailSubject);
 
 		res.status(200).json({
 			status: 'success',

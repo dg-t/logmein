@@ -42,6 +42,10 @@ const userSchema = new mongoose.Schema({
 		default: true,
 		select: false,
 	},
+	preferredLanguage: {
+		type: String,
+		default: 'en',
+	},
 	passwordChangedAt: Date,
 	passwordResetToken: String,
 	passwordResetExpires: Date,

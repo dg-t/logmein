@@ -5,12 +5,21 @@ const helmet = require('helmet');
 const mongoSanitize = require('express-mongo-sanitize');
 const xss = require('xss-clean');
 const hpp = require('hpp');
+const { I18n } = require('i18n');
 const userRouter = require('./routes/userRoutes');
 const AppError = require('./utils/appError');
 const globalErrorHandler = require('./controllers/errorController');
 const getHomePage = require('./controllers/homeController');
 
+const i18n = new I18n({
+	locales: ['en', 'it'],
+	directory: `${__dirname}/locales`,
+	defaultLocale: 'en',
+});
+
 const app = express();
+
+app.use(i18n.init);
 
 // MIDDLEWARE
 // HTTP Security

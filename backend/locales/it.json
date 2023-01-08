@@ -1,0 +1,6 @@
+{
+	"welcomeEmailMessage": "<h1>Ciao {{name}}</h1><p>Questo è un paragrafo</p>",
+	"welcomeEmailSubject": "Email di benvenuto",
+	"forgotPasswordEmailMessage": "<h1>Ciao {{name}}</h1><p>Hai dimenticato la tua password? Per reimpostare la password, visitate la seguente URL:</p><a href=\"{{resetURL}}\">Reset pw</a><p>Se il link non funziona, copiate/incollate il seguente URL nel vostro browser:</p><p>{{resetURL}}</p><br /><p>Se non avete dimenticato la password, ignorate questa e-mail.</p>",
+    "forgotPasswordEmailSubject": "Password dimenticata (token valido per 5 minuti)"
+}
