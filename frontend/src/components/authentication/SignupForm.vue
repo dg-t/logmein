@@ -1,7 +1,22 @@
 <template>
   <div>
-    <h3 class="p-4 text-center">Login</h3>
+    <h3 class="p-4 text-center">Signup</h3>
     <form class="p-5">
+      <div class="form-group form-input-group">
+        <input
+          id="name"
+          type="text"
+          class="form-control"
+          placeholder="Name *"
+          v-model="user.name"
+          @blur="validateName"
+        />
+
+        <transition name="fade" mode="out-in">
+          <p v-if="!isValidName" class="validation">This field is required.</p>
+          <p v-else style="visibility: hidden">This field is required.</p>
+        </transition>
+      </div>
       <div class="form-group form-input-group">
         <input
           id="email"
@@ -34,19 +49,31 @@
           <p v-else style="visibility: hidden">This field is required.</p>
         </transition>
       </div>
+      <div class="form-group form-input-group">
+        <input
+          id="password-confirm"
+          type="password"
+          class="form-control"
+          placeholder="Confirm password *"
+          v-model="user.passwordConfirm"
+          @blur="validatePasswordConfirm"
+        />
+
+        <transition name="fade" mode="out-in">
+          <p v-if="!isValidPasswordConfirm" class="validation">
+            This field is required.
+          </p>
+          <p v-else style="visibility: hidden">This field is required.</p>
+        </transition>
+      </div>
 
       <div class="button-container py-3">
-        <button @click.prevent="login">Login</button>
-        <p>
-          <a href="#" class="button-forgot" @click="forgotPassword">
-            Forgot your password?
-          </a>
-        </p>
+        <button @click.prevent="signup">Signup</button>
       </div>
       <div>
         <p>
-          Don't have an account?
-          <a href="#" class="button-signup" @click="signup"> Signup </a>
+          Already have an account?
+          <a href="#" class="button-signup" @click="login"> Login </a>
         </p>
       </div>
     </form>
@@ -55,41 +82,62 @@
 
 <script>
 export default {
-  name: 'LoginForm',
+  name: 'SignupForm',
   data() {
     return {
       user: {
+        name: '',
         email: '',
         password: '',
+        passwordConfirm: '',
       },
+      isValidName: true,
       isValidEmail: true,
       isValidPassword: true,
+      isValidPasswordConfirm: true,
     };
   },
   methods: {
-    validatePassword() {
-      return !this.user.password.length
-        ? (this.isValidPassword = false)
-        : (this.isValidPassword = true);
+    validateName() {
+      return !this.user.name.length
+        ? (this.isValidName = false)
+        : (this.isValidName = true);
     },
     validateEmail() {
       return !this.user.email.length
         ? (this.isValidEmail = false)
         : (this.isValidEmail = true);
     },
-    login() {
-      if (!this.validateEmail() && !this.validatePassword()) {
+    validatePassword() {
+      return !this.user.password.length
+        ? (this.isValidPassword = false)
+        : (this.isValidPassword = true);
+    },
+    validatePasswordConfirm() {
+      return !this.user.passwordConfirm.length
+        ? (this.isValidPasswordConfirm = false)
+        : (this.isValidPasswordConfirm = true);
+    },
+    signup() {
+      if (
+        !this.validateName() &&
+        !this.validateEmail() &&
+        !this.validatePassword() &&
+        !this.validatePasswordConfirm()
+      ) {
         return;
       }
       // SEND TO BACK
       // INIT DATA
-      this.user.password = '';
+      this.user.name = '';
       this.user.email = '';
+      this.user.password = '';
+      this.user.passwordConfirm = '';
 
       return;
     },
-    signup() {
-      console.log('Go to signup');
+    login() {
+      console.log('Go to login');
     },
   },
 };
