@@ -1,5 +1,5 @@
 import { createRouter, createWebHistory } from 'vue-router';
-import HomeView from '../views/HomeView.vue';
+import AppHome from '../views/AppHome.vue';
 import AppLogin from '../views/authentication/AppLogin.vue';
 import AppSignup from '../views/authentication/AppSignup.vue';
 import AppForgotPassword from '../views/authentication/AppForgotPassword.vue';
@@ -10,7 +10,7 @@ const router = createRouter({
     {
       path: '/',
       name: 'home',
-      component: HomeView,
+      component: AppHome,
     },
     {
       path: '/login',
