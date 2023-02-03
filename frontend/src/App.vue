@@ -1,17 +1,15 @@
 <template>
   <div>
-    <AppAuthentication />
+    <router-view v-slot="slotProps">
+      <transition name="fade-route" mode="out-in">
+        <component :is="slotProps.Component"></component>
+      </transition>
+    </router-view>
   </div>
 </template>
 
 <script>
-import AppAuthentication from './views/authentication/AppAuthentication.vue';
 export default {
   name: 'App',
-  components: {
-    AppAuthentication,
-  },
 };
 </script>
-
-<style scoped></style>
