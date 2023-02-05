@@ -1,6 +1,9 @@
 <template>
   <div>
     <h3 class="p-4 text-center">Signup</h3>
+    <div v-if="isLoading" class="loader">
+      <i class="fa fa-spinner fa-spin" style="font-size: 42px"></i>
+    </div>
     <form class="p-5">
       <div class="form-group form-input-group">
         <input
@@ -10,6 +13,7 @@
           placeholder="Name *"
           v-model="user.name"
           @blur="validateName"
+          :disabled="isLoading"
         />
 
         <transition name="fade-validation" mode="out-in">
@@ -25,6 +29,7 @@
           placeholder="E-mail *"
           v-model="user.email"
           @blur="validateEmail"
+          :disabled="isLoading"
         />
 
         <transition name="fade-validation" mode="out-in">
@@ -40,6 +45,7 @@
           placeholder="Password *"
           v-model="user.password"
           @blur="validatePassword"
+          :disabled="isLoading"
         />
 
         <transition name="fade-validation" mode="out-in">
@@ -57,6 +63,7 @@
           placeholder="Confirm password *"
           v-model="user.passwordConfirm"
           @blur="validatePasswordConfirm"
+          :disabled="isLoading"
         />
 
         <transition name="fade-validation" mode="out-in">
@@ -81,6 +88,7 @@
 </template>
 
 <script>
+import Api from '../../services/Api';
 export default {
   name: 'SignupForm',
   data() {
@@ -95,6 +103,7 @@ export default {
       isValidEmail: true,
       isValidPassword: true,
       isValidPasswordConfirm: true,
+      isLoading: false,
     };
   },
   methods: {
@@ -118,23 +127,33 @@ export default {
         ? (this.isValidPasswordConfirm = false)
         : (this.isValidPasswordConfirm = true);
     },
-    signup() {
-      if (
-        !this.validateName() &&
-        !this.validateEmail() &&
-        !this.validatePassword() &&
-        !this.validatePasswordConfirm()
-      ) {
-        return;
-      }
-      // SEND TO BACK
-      // INIT DATA
-      this.user.name = '';
-      this.user.email = '';
-      this.user.password = '';
-      this.user.passwordConfirm = '';
+    async signup() {
+      try {
+        this.isLoading = true;
+        // VALIDATE DATE
+        if (
+          !this.validateName() &&
+          !this.validateEmail() &&
+          !this.validatePassword() &&
+          !this.validatePasswordConfirm()
+        ) {
+          return;
+        }
+        // SEND TO BACK
+        await Api.signupUser(this.user);
+        // INIT DATA
+        this.user.name = '';
+        this.user.email = '';
+        this.user.password = '';
+        this.user.passwordConfirm = '';
+        this.isLoading = false;
 
-      return;
+        return;
+      } catch (err) {
+        console.error(err);
+      } finally {
+        this.isLoading = false;
+      }
     },
     login() {
       console.log('Go to login');
@@ -142,3 +161,14 @@ export default {
   },
 };
 </script>
+
+<style scoped>
+/* SPINNER */
+
+.loader {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+}
+</style>
